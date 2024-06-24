@@ -1,0 +1,43 @@
+
+install.packages("scatterplot3d")
+install.packages("plotly")
+library(scatterplot3d)
+library(plotly)
+
+data <- data.frame(
+  Date = as.Date(c("2023-01-01", "2023-01-02", "2023-01-03", "2023-01-04", "2023-01-05")),
+  StockPrice = c(100, 102, 98, 105, 108),
+  VolumeTraded = c(2.5, 3.0, 2.2, 2.8, 3.5),
+  MarketCap = c(500, 510, 490, 525, 540)
+)
+
+scatterplot3d(data$VolumeTraded, data$MarketCap, data$StockPrice, 
+              xlab = "Volume Traded (millions)", 
+              ylab = "Market Cap ($)", 
+              zlab = "Stock Price ($)",
+              main = "3D Scatter Plot")
+
+VolumeTraded <- seq(min(data$VolumeTraded), max(data$VolumeTraded), length.out = 100)
+StockPrice <- seq(min(data$StockPrice), max(data$StockPrice), length.out = 100)
+grid <- expand.grid(VolumeTraded = VolumeTraded, StockPrice = StockPrice)
+grid$MarketCap <- grid$StockPrice * (data$MarketCap[1] / data$StockPrice[1])
+
+plot_ly(x = ~grid$VolumeTraded, y = ~grid$StockPrice, z = ~grid$MarketCap, 
+        type = "surface") %>%
+  layout(scene = list(
+    xaxis = list(title = "Volume Traded (millions)"),
+    yaxis = list(title = "Stock Price ($)"),
+    zaxis = list(title = "Market Cap ($)")))
+
+scatterplot3d(data$VolumeTraded, data$StockPrice, data$MarketCap, 
+              xlab = "Volume Traded (millions)", 
+              ylab = "Stock Price ($)", 
+              zlab = "Market Cap ($)",
+              main = "3D Scatter Plot: Stock Price vs Volume Traded")
+
+
+scatterplot3d(data$MarketCap, data$StockPrice, data$VolumeTraded, 
+              xlab = "Market Cap ($)", 
+              ylab = "Stock Price ($)", 
+              zlab = "Volume Traded (millions)",
+              main = "3D Scatter Plot: Stock Price vs Market Cap")
